@@ -1,22 +1,20 @@
-import { render, fireEvent } from '@testing-library/react';
-import App from '../../src/App';
+import { render, fireEvent } from '@testing-library/react'
+import CommentForm from './CommentForm'
 
-test('inserir dois comentários', () => {
-  const { getByTestId, getByText } = render(<App />);
+test('Teste de inserção de comentários e uso do "data-testid"', () => {
+  const handleSubmit = jest.fn()
 
-  const commentInput = getByTestId('comment-input');
+  const { getByTestId } = render(<CommentForm onSubmit={handleSubmit} />)
 
-  const submitButton = getByTestId('submit-button');
+  const inputElement = getByTestId('comment-input')
 
-  fireEvent.change(commentInput, { target: { value: 'Primeiro comentário' } });
-  fireEvent.click(submitButton);
+  fireEvent.change(inputElement, { target: { value: 'Primeiro comentário' } })
+  fireEvent.submit(getByTestId('comment-submit'))
 
-  const comment1 = getByText('Primeiro comentário');
-  expect(comment1).toBeInTheDocument();
+  expect(handleSubmit).toHaveBeenCalledWith('Primeiro comentário')
 
-  fireEvent.change(commentInput, { target: { value: 'Segundo comentário' } });
-  fireEvent.click(submitButton);
+  fireEvent.change(inputElement, { target: { value: 'Segundo comentário' } })
+  fireEvent.submit(getByTestId('comment-submit'))
 
-  const comment2 = getByText('Segundo comentário');
-  expect(comment2).toBeInTheDocument();
-});
+  expect(handleSubmit).toHaveBeenCalledWith('Segundo comentário')
+})
